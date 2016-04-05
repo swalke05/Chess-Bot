@@ -97,8 +97,29 @@ def lookAhead(board):
         return nextBoards[0].blackScore
 
 
+def getMax(currentBoard, depth):
+    if (depth == 0):
+        return ((currentBoard, score))
+
+    bestScore = -1000000
+
+
 
 def determineBestMove(boards):
+    # bestPlay = ()
+
+    # for board in boards:
+    #     bestPlay = getMax(board, 2)
+    #     print bestPlay
+    #     sys.exit()
+
+
+
+
+
+
+
+
     nextBoard = []
     highestMin = 0;
     location = 0
@@ -129,6 +150,33 @@ def determineBestMove(boards):
     # return boards[0]
 
 
+def getNextBoards(board):
+    board.movePieces()
+
+    for y in range(0,11):                  #Generate new board for all legal moves
+        for x in range (0,11):
+            piece = board.board[y][x]
+            if (isPiece(piece) == False):
+                continue
+
+            if (board.currentTurn == "B"):
+                if piece.colour == "white":
+                    continue
+            elif (board.currentTurn == "W"):
+                if piece.colour == "black":
+                    continue
+
+            for move in piece.legalMoves:
+                newBoard = copy.deepcopy(board)
+                newBoard.playMove(newBoard.board[y][x], move)
+                newBoard.afterEffects()
+                newBoard.calculateScores()              #Determine score for each board
+
+                nextBoards.append(newBoard)
+
+    return nextBoards
+
+
 if __name__ == "__main__":
 
     #fileContents = ""
@@ -144,36 +192,19 @@ if __name__ == "__main__":
 
     board = Board(fileContents)
 
-    board.movePieces()
+    nextBoards = getNextBoards(board)
 
-    for y in range(0,11):
-        for x in range (0,11):
-            piece = board.board[y][x]
-            if (isPiece(piece) == False):
-                continue
+    #determineBestMove(nextBoards)
 
-            if (board.currentTurn == "B"):
-                if piece.colour == "white":
-                    continue
-            elif (board.currentTurn == "W"):
-                if piece.colour == "black":
-                    continue
 
-            for move in piece.legalMoves:
-                newBoard = copy.deepcopy(board)
 
-                newBoard.playMove(newBoard.board[y][x], move)
-                newBoard.afterEffects()
-                newBoard.calculateScores()
 
-                nextBoards.append(newBoard)
 
-    if (board.checkFirstMove() == True):
-
+    if (board.checkFirstMove() == True):                #Hardcoded first move
         chosenBoard = board
 
         if (board.currentTurn == "W"):
-            board.movePiece(board.board[1][5],(2,5))
+            board.movePiece(board.board[1][5],(2,5))    #Move Joey up one space
         elif (board.currentTurn == "B"):
             board.movePiece(board.board[9][5],(8,5))
 
