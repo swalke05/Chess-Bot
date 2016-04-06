@@ -452,9 +452,6 @@ class Board:
             if (isPiece(self.board[y][x+1])):
                 piece.adjacent.append(self.board[y][x+1])
 
-        #print("adjacent")
-        #print(piece.adjacent)
-
     def removePiece(self, piece):
         if (isPiece(piece) == False):
             return
