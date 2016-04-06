@@ -17,6 +17,7 @@ from board import *
 from sys import stdin
 import logging
 import Colorer
+import random
 
 
 class TPW:
@@ -27,6 +28,7 @@ class TPW:
     line1 = ""
     line2 = ""
     line3 = ""
+
 
 
     def __init__(self, state, root=False):
@@ -59,6 +61,8 @@ class TPW:
         f.write('0\n')
         f.write('0\n')
         f.close()
+
+maximizer = ""
 
 def lookAhead(board):
     highestMin = 0
@@ -97,11 +101,8 @@ def lookAhead(board):
         return nextBoards[0].blackScore
 
 
-def getMax(currentBoard, depth):
-    if (depth == 0):
-        return ((currentBoard, score))
 
-    bestScore = -1000000
+
 
 
 
@@ -152,6 +153,7 @@ def determineBestMove(boards):
 
 def getNextBoards(board):
     board.movePieces()
+    newBoards = []
 
     for y in range(0,11):                  #Generate new board for all legal moves
         for x in range (0,11):
@@ -170,11 +172,60 @@ def getNextBoards(board):
                 newBoard = copy.deepcopy(board)
                 newBoard.playMove(newBoard.board[y][x], move)
                 newBoard.afterEffects()
-                newBoard.calculateScores()              #Determine score for each board
+                #newBoard.calculateScores()              #Determine score for each board
 
-                nextBoards.append(newBoard)
+                newBoards.append(newBoard)
 
-    return nextBoards
+    return newBoards
+
+def getMin(currentBoard, depth):
+    print ("depth = ", depth)
+    #currentBoard.printState()
+    if (depth == 0):
+        currentBoard.whiteScore = random.randrange(1,100)
+        #currentBoard.calculateScore()
+        if (maximizer == "B"):
+            return currentBoard.blackScore
+        elif (maximizer == "W"):
+            return currentBoard.whiteScore
+        else:
+            return currentBoard.whiteScore
+
+    worstScore = 1000000
+    worstBoard = copy.deepcopy(currentBoard)
+
+    newBoards = getNextBoards(currentBoard)
+    for board in newBoards:
+        score = getMax(board, depth-1)
+
+        if (score < worstScore):
+            worstScore = score
+            worstBoard = copy.deepcopy(board)
+
+    return worstScore
+
+def getMax(currentBoard, depth):
+    print("depth = ", depth)
+    #currentBoard.printState()
+    if (depth == 0):
+        currentBoard.whiteScore = random.randrange(1,100)
+        if (maximizer == "B"):
+            return currentBoard.blackScore
+        elif (maximizer == "W"):
+            return currentBoard.whiteScore
+        else:
+            return currentBoard.whiteScore
+
+    bestScore = -1000000
+    newBoards = getNextBoards(currentBoard)
+    for board in newBoards:
+        score = getMin(board, depth-1)
+
+        if (score > bestScore):
+            bestScore = score
+            bestBoard = copy.deepcopy(board)
+
+    return bestScore
 
 
 if __name__ == "__main__":
@@ -191,14 +242,13 @@ if __name__ == "__main__":
         fileContents.append(line)
 
     board = Board(fileContents)
+    maximizer = board.currentTurn
 
-    nextBoards = getNextBoards(board)
+    tester = getMax(board, 4)
+    print (tester)
+    sys.exit()
 
-    #determineBestMove(nextBoards)
-
-
-
-
+    #determineBestMove(nextBoards)    #will prbably need to move this to the ELSE
 
     if (board.checkFirstMove() == True):                #Hardcoded first move
         chosenBoard = board

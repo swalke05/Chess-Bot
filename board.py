@@ -101,7 +101,7 @@ class Board:
             return distance
 
 
-    def calculateScores(self):
+    def calculateScore(self):
         whitePieces = []
         blackPieces = [] #probably could have just used global list
 
@@ -115,12 +115,10 @@ class Board:
 
         for piece in whitePieces:
             self.whiteScore += piece.score
-            self.whiteScore += self.calculateDistanceScore(piece)
+            #self.whiteScore += self.calculateDistanceScore(piece)
         for piece in blackPieces:
             self.blackScore += piece.score
-            self.blackScore += self.calculateDistanceScore(piece)
-
-
+            #self.blackScore += self.calculateDistanceScore(piece)
 
     def toMinMaxFormat(self):
         nextFile = []
