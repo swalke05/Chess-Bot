@@ -162,8 +162,60 @@ def getNextBoards(curBoard):
     return newBoards
 
 
+def alphaBetaMax(currentBoard, depth, alpha, beta):
+    if (depth == 0):
+        currentBoard.calculateScore()
+        if (maximizer == "B"):
+            return ((currentBoard.blackScore, None, None, None))
+        elif (maximizer == "W"):
+            return ((currentBoard.whiteScore, None, None, None))
 
+    currentBoard.currentTurn = maximizer
 
+    #bestScore = -1000000
+    newBoards = getNextBoards(copy.deepcopy(currentBoard))
+    for board in newBoards:
+        score = alphaBetaMin(copy.deepcopy(board), depth-1, alpha, beta)
+
+        if (score[0] >= beta):
+            return ((beta, None)) #fail  hard beta cutoff
+        if (score[0] > alpha):
+            alpha = score[0]
+            bestBoard = copy.deepcopy(board)
+            
+    #bestBoard.printState()
+    return ((alpha, copy.deepcopy(bestBoard)))
+
+def alphaBetaMin(currentBoard, depth, alpha, beta):
+    #currentBoard.printState()
+    if (depth == 0):
+        currentBoard.calculateScore()
+        #currentBoard.calculateScore()
+        if (maximizer == "B"):
+            return ((currentBoard.blackScore, None, None, None))
+        elif (maximizer == "W"):
+            return ((currentBoard.whiteScore, None, None, None))
+
+    #maybe comment this out for testing
+    if maximizer == "W":
+        currentBoard.currentTurn = "B"
+    elif maximizer == "B":
+        currentBoard.currentTurn = "W"
+
+    #worstScore = 1000000
+
+    newBoards = getNextBoards(copy.deepcopy(currentBoard))
+    for board in newBoards:
+        score = alphaBetaMax(copy.deepcopy(board), depth-1, alpha, beta)
+
+        if (score[0] <= alpha):
+            return ((alpha, None)) #fail  hard alpha cutoff
+        if (score[0] < beta):
+            beta = score[0]
+            worstBoard = copy.deepcopy(board)
+
+    #worstBoard.printState()
+    return ((beta, copy.deepcopy(worstBoard)))
 
 
 
@@ -237,6 +289,7 @@ if __name__ == "__main__":
     board.printState()
     print("")
     print("after minmax")
+    #tester = alphaBetaMax(board, 2, -1000000, 1000000)
     tester = getMax(board, 2)
     tester[1].printState()
     sys.exit()
