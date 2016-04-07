@@ -172,11 +172,12 @@ def getMin(cBoard, depth):
         elif (maximizer == "W"):
             return ((cBoard.whiteScore, None))
         else:
-            return cBoard.whiteScore
+            print ("ERROR")
+            sys.exit
 
     #maybe comment this out for testing
     if maximizer == "W":
-        cBoard.curentTurn = "B"
+        cBoard.currentTurn = "B"
     elif maximizer == "B":
         cBoard.currentTurn = "W"
 
@@ -204,7 +205,8 @@ def getMax(currentBoard, depth):
         elif (maximizer == "W"):
             return ((currentBoard.whiteScore, None))
         else:
-            return currentBoard.whiteScore
+            print(" ERROR")
+            sys.exit()
 
     currentBoard.currentTurn = maximizer
 
