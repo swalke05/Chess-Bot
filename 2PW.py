@@ -161,31 +161,38 @@ def getNextBoards(curBoard):
                 newBoards.append(newBoard)
     return newBoards
 
-def getMin(cBoard, depth):
+
+
+
+
+
+
+
+def getMin(currentBoard, depth):
     #currentBoard.printState()
     if (depth == 0):
-        cBoard.calculateScore()
+        currentBoard.calculateScore()
         #currentBoard.calculateScore()
         if (maximizer == "B"):
-            return ((cBoard.blackScore, None))
+            return ((currentBoard.blackScore, None))
         elif (maximizer == "W"):
-            return ((cBoard.whiteScore, None))
+            return ((currentBoard.whiteScore, None))
 
     #maybe comment this out for testing
     if maximizer == "W":
-        cBoard.currentTurn = "B"
+        currentBoard.currentTurn = "B"
     elif maximizer == "B":
-        cBoard.currentTurn = "W"
+        currentBoard.currentTurn = "W"
 
     worstScore = 1000000
 
-    newBoardz = getNextBoards(copy.deepcopy(cBoard))
-    for nBoard in newBoardz:
-        score = getMax(copy.deepcopy(nBoard), depth-1)
+    newBoards = getNextBoards(copy.deepcopy(currentBoard))
+    for board in newBoards:
+        score = getMax(copy.deepcopy(board), depth-1)
 
         if (score[0] < worstScore):
             worstScore = score[0]
-            worstBoard = copy.deepcopy(nBoard)
+            worstBoard = copy.deepcopy(board)
 
     #worstBoard.printState()
     return ((worstScore, copy.deepcopy(worstBoard)))
@@ -202,12 +209,12 @@ def getMax(currentBoard, depth):
 
     bestScore = -1000000
     newBoards = getNextBoards(copy.deepcopy(currentBoard))
-    for xBoard in newBoards:
-        score = getMin(copy.deepcopy(xBoard), depth-1)
+    for board in newBoards:
+        score = getMin(copy.deepcopy(board), depth-1)
 
         if (score[0] > bestScore):
             bestScore = score[0]
-            bestBoard = copy.deepcopy(xBoard)
+            bestBoard = copy.deepcopy(board)
     #bestBoard.printState()
     return ((bestScore, copy.deepcopy(bestBoard)))
 
@@ -218,7 +225,6 @@ if __name__ == "__main__":
     legalMoves = []
     nextBoards = []
     hScore = 0
-    bestBoard = None
     firstMove = False
 
     for line in fileinput.input(None):
@@ -231,7 +237,7 @@ if __name__ == "__main__":
     board.printState()
     print("")
     print("after minmax")
-    tester = getMax(board, 3)
+    tester = getMax(board, 2)
     tester[1].printState()
     sys.exit()
 
