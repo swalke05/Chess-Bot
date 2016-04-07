@@ -162,18 +162,14 @@ def getNextBoards(curBoard):
     return newBoards
 
 def getMin(cBoard, depth):
-    print ("depth = ", depth)
     #currentBoard.printState()
     if (depth == 0):
-        cBoard.whiteScore = random.randrange(1,100)
+        cBoard.calculateScore()
         #currentBoard.calculateScore()
         if (maximizer == "B"):
             return ((cBoard.blackScore, None))
         elif (maximizer == "W"):
             return ((cBoard.whiteScore, None))
-        else:
-            print ("ERROR")
-            sys.exit
 
     #maybe comment this out for testing
     if maximizer == "W":
@@ -182,8 +178,7 @@ def getMin(cBoard, depth):
         cBoard.currentTurn = "W"
 
     worstScore = 1000000
-    #worstBoard = copy.deepcopy(currentBoard)
-    print("moving pieces for ", cBoard.currentTurn)
+
     newBoardz = getNextBoards(copy.deepcopy(cBoard))
     for nBoard in newBoardz:
         score = getMax(copy.deepcopy(nBoard), depth-1)
@@ -192,21 +187,16 @@ def getMin(cBoard, depth):
             worstScore = score[0]
             worstBoard = copy.deepcopy(nBoard)
 
-    worstBoard.printState()
+    #worstBoard.printState()
     return ((worstScore, copy.deepcopy(worstBoard)))
 
 def getMax(currentBoard, depth):
-    print("depth = ", depth)
-    #currentBoard.printState()
     if (depth == 0):
-        currentBoard.whiteScore = random.randrange(1,100)
+        currentBoard.calculateScore()
         if (maximizer == "B"):
             return ((currentBoard.blackScore, None))
         elif (maximizer == "W"):
             return ((currentBoard.whiteScore, None))
-        else:
-            print(" ERROR")
-            sys.exit()
 
     currentBoard.currentTurn = maximizer
 
@@ -218,7 +208,7 @@ def getMax(currentBoard, depth):
         if (score[0] > bestScore):
             bestScore = score[0]
             bestBoard = copy.deepcopy(xBoard)
-    bestBoard.printState()
+    #bestBoard.printState()
     return ((bestScore, copy.deepcopy(bestBoard)))
 
 if __name__ == "__main__":
@@ -237,6 +227,10 @@ if __name__ == "__main__":
     board = Board(fileContents)
     maximizer = board.currentTurn
 
+    print("before minmax")
+    board.printState()
+    print("")
+    print("after minmax")
     tester = getMax(board, 3)
     tester[1].printState()
     sys.exit()
